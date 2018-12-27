@@ -30,6 +30,7 @@ Vagrant.configure("2") do |config|
     chef.add_recipe "user"
     chef.add_recipe "apt"
     chef.add_recipe "build-essential"
+    chef.add_recipe "custom-lib"
     chef.add_recipe "ruby_build"
     chef.add_recipe "ruby_rbenv::user"
     chef.add_recipe "ruby_rbenv::user_install"
@@ -37,7 +38,7 @@ Vagrant.configure("2") do |config|
     chef.add_recipe "vim"
     chef.add_recipe 'vim-plugin'
     chef.add_recipe 'nodejs'
-    chef.add_recipe 'redis'
+    chef.add_recipe 'redis::install_from_package'
 
     chef.json = {
       rbenv: {
