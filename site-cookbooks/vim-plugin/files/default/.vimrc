@@ -1,0 +1,703 @@
+"------------------------------------------------------------------------------
+set nocompatible " Vim!
+"------------------------------------------------------------------------------
+" Variables
+let $TODAY = strftime('%Y%m%d')
+let $DESKTOP = expand('~/desktop')
+
+if has("macunix")
+  let $LUA_DLL = '/usr/local/Cellar/lua/5.1.5/lib/liblua.dylib'
+endif
+
+if has("win32") || has("win64")
+  let $DOTVIM = expand('~/vimfiles')
+else
+  let $DOTVIM = expand('~/.vim')
+endif
+
+
+"------------------------------------------------------------------------------
+" NeoBundle
+" Plugin 追加: .vimrc に追加して、:NeoBundleInstall
+" Plugin 削除: .vimrc から削除して、:NeoBundleClean
+" Plugin 更新: :NeoBundleUpdate
+filetype off
+
+
+if has('vim_starting')
+  set rtp+=$DOTVIM/bundle/neobundle.vim/
+endif
+
+call neobundle#begin($DOTVIM.'/bundle')
+" NeoBundle
+NeoBundle 'https://github.com/Shougo/neobundle.vim'
+
+NeoBundleFetch 'Shougo/neobundle.vim'
+" Color scheme
+NeoBundle 'ciaranm/inkpot'
+NeoBundle 'altercation/vim-colors-solarized'
+" Syntax highlight
+NeoBundle 'jQuery'
+NeoBundle 'jelera/vim-javascript-syntax'
+NeoBundle 'nono/vim-handlebars'
+NeoBundle 'kchmck/vim-coffee-script'
+NeoBundle 'othree/html5-syntax.vim'
+NeoBundle 'hallison/vim-markdown'
+NeoBundle 'timcharper/textile.vim'
+NeoBundle 'groenewege/vim-less'
+NeoBundle 'wavded/vim-stylus'
+NeoBundle 'hail2u/vim-css3-syntax'
+NeoBundle 'digitaltoad/vim-jade'
+NeoBundle 'leafgarland/typescript-vim'
+NeoBundle 'elzr/vim-json'
+NeoBundle 'pangloss/vim-javascript'
+NeoBundle 'mxw/vim-jsx'
+
+NeoBundleLazy 'clausreinke/typescript-tools', {
+\ 'script_type' : 'plugin',
+\ 'autoload' : { 'filetypes' : 'typescript' },
+\ 'build' : {
+\     'cygwin' : 'npm install',
+\     'windows' : 'npm install',
+\     'mac'    : 'npm install',
+\     'unix'   : 'npm install',
+\   },
+\ }
+" Environment
+NeoBundle 'Shougo/unite.vim'
+NeoBundle 'Shougo/neomru.vim'
+NeoBundle 'Sixeight/unite-grep'
+NeoBundle 'Shougo/vimfiler'
+NeoBundle 'thinca/vim-qfreplace'
+NeoBundle 'Shougo/vimproc', {
+\ 'build' : {
+\     'windows' : 'make -f make_mingw32.mak',
+\     'cygwin' : 'make -f make_cygwin.mak',
+\     'mac' : 'make -f make_mac.mak',
+\     'unix' : 'make -f make_unix.mak',
+\    },
+\ }
+" Code completion
+NeoBundle 'Shougo/neocomplete.vim'
+NeoBundle 'Shougo/neosnippet'
+NeoBundle 'Shougo/neosnippet-snippets'
+NeoBundle 'myhere/vim-nodejs-complete'
+
+NeoBundle 'marijnh/tern_for_vim', {
+\ 'autoload' : { 'filetypes' : 'javascript' },
+\   'build': {
+\     'windows': 'npm install',
+\     'mac': 'npm install',
+\     'unix': 'npm install',
+\   },
+\ }
+
+NeoBundle 'tokorom/clang_complete'
+NeoBundle 'tokorom/clang_complete-getopts-ios'
+" Source reading
+NeoBundle 'wesleyche/SrcExpl'
+NeoBundle 'wesleyche/Trinity'
+NeoBundle 'taglist.vim'
+NeoBundle 'scrooloose/nerdtree'
+"EsLint
+NeoBundle 'scrooloose/syntastic'
+NeoBundle 'pmsorhaindo/syntastic-local-eslint.vim'
+"NeoBundle 'ruanyl/vim-fixmyjs'
+" Misc
+" NeoBundle 'fholgado/minibufexpl.vim'
+NeoBundle 'jiangmiao/simple-javascript-indenter'
+NeoBundle 'tpope/vim-rails'
+NeoBundle 'tpope/vim-surround'
+NeoBundle 'thinca/vim-poslist'
+NeoBundle 'thinca/vim-quickrun'
+NeoBundle 'scrooloose/nerdcommenter'
+NeoBundle 'mattn/webapi-vim'
+NeoBundle 'mattn/gist-vim'
+NeoBundle 'thinca/vim-splash'
+NeoBundle 'YankRing.vim'
+NeoBundle 'matchit.zip'
+NeoBundle 'Align'
+NeoBundle 'thinca/vim-threes'
+NeoBundle 'thinca/vim-singleton'
+
+
+
+"git
+"NeoBundle 'tpope/vim-fugitive'
+
+"CtrlP
+NeoBundle 'kien/ctrlp.vim'
+
+"Neo bundle for clojure
+NeoBundle 'tpope/vim-fireplace'
+NeoBundle "markwoodhall/vim-figwheel"
+NeoBundle 'tpope/vim-classpath'
+NeoBundle 'tpope/vim-leiningen'
+NeoBundle 'vim-scripts/paredit.vim'
+
+
+"sql
+NeoBundle 'https://github.com/vim-scripts/SQLUtilities.git'
+
+"html
+NeoBundle 'mattn/emmet-vim'
+
+"editor config
+NeoBundle 'editorconfig/editorconfig-vim'
+
+"solidity
+NeoBundle 'tomlion/vim-solidity'
+
+" ruby static syntax
+NeoBundle 'w0rp/ale'
+
+call neobundle#end()
+
+filetype plugin indent on
+"------------------------------------------------------------------------------
+" Color scheme
+syntax enable
+set background=dark
+colorscheme solarized
+
+if !has('gui_running')
+  set t_Co=256
+  let g:solarized_termcolors=256
+  let g:solarized_termtrans = 1
+  let g:solarized_contrast = 'high'
+  let g:solarized_visibility = 'high'
+endif
+
+" if exists('+colorcolumn')
+  " autocmd Filetype * set colorcolumn=81
+  " autocmd Filetype Scratch set colorcolumn=''
+" endif
+"------------------------------------------------------------------------------
+" Status line
+set laststatus=2    " 常にステータスラインを表示
+set statusline=%<%F\ %r%h%w%y%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']'}%=%4v(ASCII=%03.3b,HEX=%02.2B)\ %l/%L(%P)%m
+
+" 入力モード時、ステータスラインのカラーを変更
+augroup InsertHook
+  autocmd!
+  autocmd InsertEnter * highlight StatusLine guifg=#ccdc90 guibg=#2E4340
+  autocmd InsertLeave * highlight StatusLine guifg=#2E4340 guibg=#ccdc90
+augroup END
+"------------------------------------------------------------------------------
+" General settings
+let mapleader = ","            " キーマップリーダー
+set notitle                    " タイトル変更しない
+set scrolloff=5                " スクロール時の余白確保
+set nowritebackup              " バックアップファイルを作らない
+set nobackup                   " バックアップ取らない。バックアップファイルを作っても削除。
+set noswapfile                 " スワップファイル作らない
+set autoread                   " 他で書き換えられたら自動で読み直す
+set hidden                     " 編集中でも他のファイルを開けるようにする
+set backspace=indent,eol,start " バックスペースでなんでも消せるように
+set formatoptions=lmoq         " テキスト整形オプション，マルチバイト系を追加
+set vb t_vb=                   " ビープをならさない
+set browsedir=buffer           " Exploreの初期ディレクトリ
+set whichwrap=b,s,h,l,<,>,[,]  " カーソルを行頭、行末で止まらないようにする
+set showcmd                    " コマンドをステータス行に表示
+set magic                      " 正規表現に使われる記号を有効にする
+set nofoldenable               " 折り畳み無効
+set noundofile                 " アンドゥファイルを生成しない
+" set autochdir                  " バッファを開いた時にカレントディレクトリを変更
+"------------------------------------------------------------------------------
+" View
+set showcmd                                       " 入力中のコマンドを表示
+set number                                        " 行番号表示
+set numberwidth=6                                 " 行番号の幅
+set ruler                                         " ルーラーの表示
+set list                                          " 不可視文字表示
+set listchars=tab:>.,trail:_,extends:>,precedes:< " 不可視文字の表示形式
+set display=uhex                                  " 印字不可能文字を16進数で表示
+
+" 全角スペースをハイライト
+if has("syntax")
+  syntax on
+  function! ActivateInvisibleIndicator()
+    syntax match InvisibleJISX0208Space "　" display containedin=ALL
+    highlight InvisibleJISX0208Space term=underline ctermbg=236 guibg=Cyan
+  endf
+  augroup invisible
+    autocmd! invisible
+    autocmd BufNew,BufRead * call ActivateInvisibleIndicator()
+  augroup END
+endif
+
+" カレントウィンドウにのみ罫線を引く
+augroup cch
+  autocmd! cch
+  autocmd WinLeave * set nocursorline
+  autocmd WinEnter,BufRead * set cursorline
+ augroup END
+"------------------------------------------------------------------------------
+" Indent
+set autoindent
+set smartindent
+set cindent
+set shiftwidth=2
+set softtabstop=2
+set tabstop=2
+set expandtab " タブをスペースに展開
+"------------------------------------------------------------------------------
+" Command complement and history
+set wildmenu            " コマンド補完を強化
+set wildchar=<tab>      " コマンド補完を開始するキー
+set wildmode=list:full  " リスト表示，最長マッチ
+set history=10000        " コマンド・検索パターンの履歴数
+set complete+=k         " 補完に辞書ファイル追加
+"------------------------------------------------------------------------------
+" Search settings
+set nowrapscan          " 最後まで検索したら先頭へ戻らない
+set ignorecase          " 大文字小文字無視
+set smartcase           " 大文字ではじめたら大文字小文字無視しない
+set incsearch           " インクリメンタルサーチ
+set hlsearch            " 検索文字をハイライト
+
+if executable('ag')
+  set grepprg=ag\ --nogroup\ -is
+  set grepformat=%f:%l:%m
+elseif executable('ack')
+  set grepprg=ack\ --nogroup
+  set grepformat=%f:%l:%m
+else
+  set grepprg=grep\ -Hnd\ skip\ -r
+  set grepformat=%f:%l:%m,%f:%l%m,%f\ \ %l%m
+endif
+
+" 選択した文字列を検索
+vnoremap <silent> // y/<C-R>=escape(@", '\\/.*$^~[]')<CR><CR>
+
+" 選択した文字列を置換
+vnoremap /r "xy:%s/<C-R>=escape(@x, '\\/.*$^~[]')<CR>/<C-R>=escape(@x, '\\/.*$^~[]')<CR>/gc<Left><Left><Left>
+
+" 選択した文字列を Grep
+vnoremap /g y:Unite -no-quit grep:.::<C-R>=escape(@", '\\.*$^[]')<CR><CR>
+"------------------------------------------------------------------------------
+" Encodings
+set ffs=unix,dos,mac    " 改行
+let $LANG='ja_JP.UTF-8' " Default
+set encoding=utf-8
+set fileencoding=utf-8
+
+if has('win32') && has('kaoriya')
+  set ambiwidth=auto
+else
+  set ambiwidth=double
+endif
+
+if has('iconv')
+  let s:enc_utf = 'utf-8'
+  let s:enc_euc = 'euc-jp'
+  let s:enc_jis = 'iso-2022-jp'
+  if iconv("\x87\x64\x87\x6a", 'cp932', 'euc-jisx0213') ==# "\xad\xc5\xad\xcb"
+    let s:enc_euc = 'euc-jisx0213,euc-jp'
+    let s:enc_jis = 'iso-2022-jp-3'
+  endif
+  set fileencodings&
+  let &fileencodings = &fileencodings.','.s:enc_utf.','.s:enc_jis.',cp932,'.s:enc_euc
+  unlet s:enc_euc
+  unlet s:enc_jis
+endif
+
+if has('win32unix')
+  set termencoding=cp932
+endif
+"
+"------------------------------------------------------------------------------
+" Filetype detection
+au BufRead,BufNewFile *.cson set filetype=coffee
+au BufRead,BufNewFile *.jsenv set filetype=javascript
+au BufRead,BufNewFile *.coffeeenv set filetype=coffee
+au BufRead,BufNewFile *.jmk set filetype=javascript
+au BufRead,BufNewFile *.prefab set filetype=yaml
+au BufRead,BufNewFile *.json set filetype=json
+"------------------------------------------------------------------------------
+" Custom commands
+
+" 現在開いているディレクトリをルートディレクトリに
+command! Cd :cd %:h
+
+" ファイル名変更
+command! -nargs=+ -bang -complete=file Rename let pbnr=fnamemodify(bufname('%'), ':p')|exec 'f '.escape(<q-args>, ' ')|w<bang>|call delete(pbnr)
+
+" エンコード指定してファイルを開く
+command! -nargs=1 Reload :e ++enc=<f-args>
+
+" 末尾スペース削除
+command! Rstrip :%s/\s\+$//e
+
+" 改行コードをLF、エンコーディングをutf-8の状態にする
+command! Normalize :call s:Normalize()
+function! s:Normalize()
+  set ff=unix
+  set fenc=utf-8
+  try
+    %s/
+//g
+  catch
+  endtry
+endfunction
+"------------------------------------------------------------------------------
+" Utilities
+
+
+" タグファイル設定
+set tags=$DOTVIM/mytags
+
+if has("win32") || has("win64")
+  set tags+=$DOTVIM/mytags_win
+endif
+
+if has('path_extra')
+  set tags+=tags;
+endif
+
+" Windowsバックスラッシュ対策 Vundleを使っているのでコメントアウト
+"set shellslash
+
+" クリップボードを使用
+set clipboard+=unnamed
+"------------------------------------------------------------------------------
+" matchit.vim
+let b:match_words="{{t:{{/t}}" " % で対応するフレーズに移動
+"------------------------------------------------------------------------------
+" nerd_commenter.vim
+let NERDSpaceDelims = 1
+let NERDShutUp = 1
+"------------------------------------------------------------------------------
+" yankring.vim
+let g:yankring_history_file = '.yankring_history'
+let g:yankring_manual_clipboard_check = 0
+"------------------------------------------------------------------------------
+" taglist.vim
+if has("macunix")
+  let Tlist_Ctags_Cmd = '/usr/local/bin/ctags'
+endif
+"------------------------------------------------------------------------------
+" Use neocomplete.
+let g:neocomplete#enable_at_startup = 1
+let g:neocomplete#enable_camel_case_completion = 1
+let g:neocomplete#enable_underbar_completion = 1
+let g:neocomplete#enable_smart_case = 1
+" Set minimum syntax keyword length.
+let g:neocomplete#sources#syntax#min_keyword_length = 3
+let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
+
+" Define dictionary.
+let g:neocomplete#sources#dictionary#dictionaries = {
+  \ 'default' : '',
+  \ 'vimshell' : $HOME.'/.vimshell_hist',
+  \ 'scheme' : $HOME.'/.gosh_completions',
+  \ 'c' : $DOTVIM.'/dict/c-eglibc.dict',
+  \ 'objc' : $DOTVIM.'/dict/objectivec.dict',
+  \ 'ruby' : $DOTVIM.'/dict/ruby.dict',
+  \ 'perl' : $DOTVIM.'/dict/perl.dict',
+  \ 'css' : $DOTVIM.'/dict/css.dict',
+  \ 'javascript' : $DOTVIM.'/dict/javascript.dict',
+  \ 'coffee' : $DOTVIM.'/dict/javascript.dict',
+  \ 'actionscript' : $DOTVIM.'/dict/actionscript.dict'
+  \ }
+
+" Define keyword.
+if !exists('g:neocomplete#keyword_patterns')
+  let g:neocomplete#keyword_patterns = {}
+endif
+let g:neocomplete#keyword_patterns['default'] = '\h\w*'
+
+" Plugin key-mappings.
+inoremap <expr><C-g> neocomplete#undo_completion()
+inoremap <expr><C-l> neocomplete#complete_common_string()
+
+" Recommended key-mappings.
+" <CR>: close popup and save indent.
+inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+function! s:my_cr_function()
+  return neocomplete#smart_close_popup() . "\<CR>"
+  " For no inserting <CR> key.
+  "return pumvisible() ? neocomplete#close_popup() : "\<CR>"
+endfunction
+" <TAB>: completion.
+inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+" dot: completion.
+" inoremap <expr> . pumvisible() ? neocomplete#smart_close_popup().".\<C-X>\<C-O>\<C-P>" : ".\<C-X>\<C-O>\<C-P>"
+" <C-h>, <BS>: close popup and delete backword char.
+inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
+inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+inoremap <expr><C-y> neocomplete#close_popup()
+inoremap <expr><C-e> neocomplete#cancel_popup()
+" Close popup by <Space>.
+inoremap <expr><Space> pumvisible() ? neocomplete#close_popup()."\<Space>" : "\<Space>"
+
+" Enable omni completion.
+autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd FileType javascript setlocal omnifunc=nodejscomplete#CompleteJS
+autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+autocmd FileType c set omnifunc=ccomplete#Complete
+autocmd FileType cpp set omnifunc=cppcomplete#Complete
+autocmd FileType php set omnifunc=phpcomplete#CompletePHP
+autocmd FileType typescript setlocal omnifunc=TSScompleteFunc
+autocmd FileType ruby,eruby setlocal omnifunc=rubycomplete#Complete
+autocmd FileType ruby,eruby let g:rubycomplete_buffer_loading = 1
+autocmd FileType ruby,eruby let g:rubycomplete_classes_in_global = 1
+autocmd FileType ruby,eruby let g:rubycomplete_rails = 1
+autocmd FileType clojure NeoCompleteLock
+autocmd FileType java NeoBundleSource eclim
+
+" Enable heavy omni completion.
+if !exists('g:neocomplete#sources#omni#input_patterns')
+  let g:neocomplete#sources#omni#input_patterns = {}
+endif
+let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
+let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+let g:neocomplete#sources#omni#input_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
+let g:neocomplete#sources#omni#input_patterns.cs = '.*[^=\);]'
+let g:neocomplete#sources#omni#input_patterns.typescript = '.*'
+let g:neocomplete#sources#omni#input_patterns.javascript = '[^. *\t]\.\w*\|\h\w*::'
+let g:neocomplete#sources#omni#input_patterns.objc = '[^.[:digit:] *\t]\%(\.\|->\)'
+let g:neocomplete#sources#omni#input_patterns.objcpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'"
+
+if !exists('g:neocomplcache_omni_functions')
+    let g:neocomplcache_omni_functions = {}
+  endif
+  let g:neocomplcache_omni_functions.javascript = 'nodejscomplete#CompleteJS'
+
+  let g:node_usejscomplete = 1
+
+" For clang_complete
+if !exists('g:neocomplete#force_omni_input_patterns')
+  let g:neocomplete#force_omni_input_patterns = {}
+endif
+let g:neocomplete#force_overwrite_completefunc = 1
+let g:neocomplete#force_omni_input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)\w*'
+let g:neocomplete#force_omni_input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\w*\|\h\w*::\w*'
+let g:neocomplete#force_omni_input_patterns.objc = '[^.[:digit:] *\t]\%(\.\|->\)\w*'
+let g:neocomplete#force_omni_input_patterns.objcpp = '[^.[:digit:] *\t]\%(\.\|->\)\w*\|\h\w*::\w*'
+let g:clang_complete_auto = 0
+let g:clang_auto_select = 0
+"let g:clang_use_library = 1
+"
+"----------------------------------------------------
+"vim-jsx
+let g:jsx_pragma_required = 0
+"------------------------------------------------------------------------------
+" neosnippet
+" Enable snipMate compatibility feature.
+let g:neosnippet#enable_snipmate_compatibility = 1
+
+" Tell Neosnippet about the other snippets
+let g:neosnippet#snippets_directory=$DOTVIM.'/snippets'
+
+" Plugin key-mappings.
+imap <C-k> <Plug>(neosnippet_expand_or_jump)
+smap <C-k> <Plug>(neosnippet_expand_or_jump)
+xmap <C-k> <Plug>(neosnippet_expand_target)
+
+imap <expr><CR> neosnippet#expandable_or_jumpable() ?
+  \ "\<Plug>(neosnippet_expand_or_jump)"
+  \: "\<CR>"
+smap <expr><CR> neosnippet#expandable_or_jumpable() ?
+  \ "\<Plug>(neosnippet_expand_or_jump)"
+  \: "\<CR>"
+"------------------------------------------------------------------------------
+" unite.vim
+let g:unite_enable_start_insert = 1
+let g:unite_update_time = 10
+
+" 大文字小文字を区別しない
+let g:unite_enable_ignore_case = 1
+let g:unite_enable_smart_case = 1
+
+if executable('ag')
+  let g:unite_source_grep_command = 'ag'
+  let g:unite_source_grep_default_opts = '--nogroup --nocolor --column --smart-case'
+  let g:unite_source_grep_recursive_opt = ''
+endif
+
+" バッファ一覧
+nnoremap <silent> ,ub :<C-u>Unite buffer<CR>
+
+" カレントディレクトリ一覧
+nnoremap <silent> ,ud :<C-u>UniteWithCurrentDir file<CR>
+
+" バッファのディレクトリ一覧
+nnoremap <silent> ,uf :<C-u>UniteWithBufferDir -buffer-name=files file<CR>
+
+" レジスタ一覧
+nnoremap <silent> ,ur :<C-u>Unite -buffer-name=register register<CR>
+
+" 最近使用したファイル一覧
+nnoremap <silent> ,um :<C-u>Unite file_mru<CR>
+
+" 再帰的ファイル一覧
+nnoremap <silent> ,uu :<C-u>Unite file_rec/async:!<CR>
+
+" grep
+nnoremap <silent> ,ug :<C-u>Unite -no-quit grep:. -buffer-name=search-buffer<CR><BS>
+
+autocmd FileType unite call s:unite_my_settings()
+function! s:unite_my_settings()
+  imap <buffer> qq <Plug>(unite_exit)
+  nmap <buffer> qq <Plug>(unite_exit)
+  nmap <buffer> q <Plug>(unite_exit)
+  imap <buffer> jj <Plug>(unite_insert_leave)
+  imap <buffer> kk <Plug>(unite_insert_leave)
+  imap <buffer> <C-w> <Plug>(unite_delete_backward_path)
+  nmap <buffer> <C-w> <Plug>(unite_delete_backward_path)
+  imap <buffer> <TAB> <Plug>(unite_select_next_line)<ESC>
+  imap <buffer> <S-TAB> <Plug>(unite_select_previous_line)<ESC>
+  nmap <buffer> <Tab> j
+  nmap <buffer> <S-TAB> k
+  imap <buffer> <C-n> <Plug>(unite_select_next_line)<ESC>
+  nmap <buffer> <C-n> j
+  imap <buffer> <C-r> <Plug>(unite_redraw)
+  nmap <buffer> <C-r> <Plug>(unite_redraw)
+  imap <buffer><expr> <C-e> unite#do_action('vimfiler')
+  nmap <buffer><expr> <C-e> unite#do_action('vimfiler')
+endfunction
+"------------------------------------------------------------------------------
+" vimfiler
+let g:vimfiler_safe_mode_by_default = 0
+nnoremap <silent> <C-e> :VimFilerBufferDir -simple<CR>
+
+autocmd! FileType vimfiler call g:vimfiler_my_settings()
+function! s:vimfiler_my_settings()
+  nmap qq <Plug>(vimfiler_exit)
+  nmap q <Plug>(vimfiler_exit)
+  nmap <buffer><expr><CR> vimfiler#smart_cursor_map("\<Plug>(vimfiler_expand_tree)", "\<Plug>(vimfiler_edit_file)")
+endfunction
+"------------------------------------------------------------------------------
+" trinity.vim
+
+" Open and close all the three plugins on the same time
+nmap <F8>   :TrinityToggleAll<CR>
+
+" Open and close the srcexpl.vim separately
+nmap <F9>   :TrinityToggleSourceExplorer<CR>
+
+" Open and close the taglist.vim separately
+nmap <F10>  :TrinityToggleTagList<CR>
+
+"------------------------------------------------------------------------------
+" Gist.vim
+let g:gist_clip_command = 'pbcopy'
+let g:gist_detect_filetype = 1
+let g:gist_open_browser_after_post = 1
+let g:gist_post_private = 1
+"------------------------------------------------------------------------------
+" poslist
+nmap <C-f> <Plug>(poslist-next-pos)
+imap <C-f> <C-o><Plug>(poslist-next-pos)
+nmap <C-b> <Plug>(poslist-prev-pos)
+imap <C-b> <C-o><Plug>(poslist-prev-pos)
+"------------------------------------------------------------------------------
+" syntastic
+" :Errors エラー一覧表示
+" let g:syntastic_auto_loc_list = 1
+let g:syntastic_enable_signs=1
+let g:syntastic_auto_jump=1
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+"let g:syntastic_mode_map = { 'mode': 'active',
+"  \ 'active_filetypes': [],
+"  \ 'passive_filetypes': ['html'] }
+
+let g:syntastic_javascript_checkers=['eslint']
+
+" ここから下は Syntastic のおすすめの設定
+" ref. https://github.com/scrooloose/syntastic#settings
+
+" エラー行に sign を表示
+let g:syntastic_enable_signs = 1
+" location list を常に更新
+let g:syntastic_always_populate_loc_list = 0
+" location list を常に表示
+let g:syntastic_auto_loc_list = 0
+" ファイルを開いた時にチェックを実行する
+let g:syntastic_check_on_open = 1
+" :wq で終了する時もチェックする
+let g:syntastic_check_on_wq = 0
+
+" For objective-c
+let g:syntastic_objc_check_header = 1
+let g:syntastic_objc_auto_refresh_includes = 1
+
+"let g:fixmyjs_engine = 'eslint'
+"let g:fixmyjs_use_local = 1
+"au BufWritePre *.js :Fixmyjs
+"au BufWritePre *.jsx :Fixmyjs
+"------------------------------------------------------------------------------
+" QuickRun
+command! Q :QuickRun
+let g:quickrun_config = {
+\   "_" : {
+\       "runner" : "vimproc",
+\       "runner/vimproc/updatetime" : 60
+\   },
+\}
+" quickrun.vim が実行していない場合には <C-c> を呼び出す
+nnoremap <expr><silent> <C-c> quickrun#is_running() ? quickrun#sweep_sessions() : "\<C-c>"
+"------------------------------------------------------------------------------
+" clang complete
+let g:clang_complete_auto = 0
+let g:clang_auto_select = 0
+
+let g:clang_complete_getopts_ios_default_options = '-fblocks -fobjc-arc -D __IPHONE_OS_VERSION_MIN_REQUIRED=40300'
+let g:clang_complete_getopts_ios_sdk_directory = '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator6.1.sdk'
+let g:clang_complete_getopts_ios_ignore_directories = ["^\.git", "\.xcodeproj"]
+"------------------------------------------------------------------------------
+" vim-json
+let g:vim_json_syntax_conceal = 0
+
+
+" NERDTree
+" " ----------------------------------------
+let g:NERDTreeDirArrows = 1
+let g:NERDTreeDirArrowExpandable = '▸'
+let g:NERDTreeDirArrowCollapsible = '▾'
+let g:NERDTreeGlyphReadOnly = "RO"
+let g:NERDTreeMouseMode=0
+let NERDTreeMapOpenInTab='<ENTER>'
+ autocmd FileType nerdtree setlocal nolist       " 不可視文字を非表示
+ autocmd vimenter * NERDTree
+ nnoremap Nt :NERDTreeToggle<CR>               " <F2>でトグルする
+" " 最後に残ったウィンドウがNERDTREEのみのときはvimを閉じる
+ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
+
+ "sql tool
+vmap <silent>sf        <Plug>SQLU_Formatter<CR>
+nmap <silent>scl       <Plug>SQLU_CreateColumnList<CR>
+nmap <silent>scd       <Plug>SQLU_GetColumnDef<CR>
+nmap <silent>scdt      <Plug>SQLU_GetColumnDataType<CR>
+nmap <silent>scp       <Plug>SQLU_CreateProcedure<CR>
+
+"javascript
+let g:jsx_ext_required = 0
+let g:javascript_enable_domhtmlcss = 1
+
+
+"------------------------------------
+" emmet-vim
+"------------------------------------
+let g:user_emmet_settings = {
+    \    'variables': {
+    \      'lang': "ja"
+    \    },
+    \   'indentation': '  '
+    \ }
+
+"bug
+set maxmempattern=10000
+command! Figwheel :Piggieback! (do (require 'figwheel-sidecar.repl-api) (figwheel-sidecar.repl-api/cljs-repl))
+
+" 2bytes icon
+set ambiwidth=double

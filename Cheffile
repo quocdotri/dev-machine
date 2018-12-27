@@ -1,0 +1,17 @@
+site "http://community.opscode.com/api/v1"
+
+cookbook 'nodejs', '~> 6.0.0'
+cookbook 'redis', '~> 3.0.4'
+
+cookbook 'apt'
+cookbook 'build-essential'
+# cookbook 'system'
+cookbook 'ruby_build'
+cookbook 'ruby_rbenv', '~> 1.1.0'
+cookbook 'java'
+cookbook 'leiningen', '~> 0.2.0'
+cookbook 'mysql', '~> 8.0'
+cookbook 'apache2'
+cookbook 'vim', '~> 1.1.2'
+cookbook 'tmux', git: "https://github.com/stevendanna/tmux.git"
+cookbook "neobundle", git: "https://github.com/Kuchitama/neobundle.git"

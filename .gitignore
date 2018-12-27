@@ -1,0 +1,4 @@
+cookbooks/**
+.vagrant/**
+tmp/**
+Cheffile.lock
