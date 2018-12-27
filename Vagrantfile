@@ -27,6 +27,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision :chef_solo do |chef|
     chef.cookbooks_path = ["cookbooks", "site-cookbooks"]
 
+    chef.add_recipe "user"
     chef.add_recipe "apt"
     chef.add_recipe "build-essential"
     chef.add_recipe "ruby_build"
@@ -40,17 +41,25 @@ Vagrant.configure("2") do |config|
 
     chef.json = {
       rbenv: {
-        user_installs: [{
-          user: 'vagrant',
-          rubies: ["2.3.6"],
-          global: "2.3.6",
-          # gems: {
-          #   "2.5.3" => [{ name: "bundler" }]
-          # }
-        }]
+        user_installs: [
+          {
+            user: 'vagrant',
+            rubies: ["2.3.6"],
+            global: "2.3.6",
+          },
+          {
+            user: 'company',
+            rubies: ["2.3.6"],
+            global: "2.3.6",
+          },
+          {
+            user: 'quocdt',
+            rubies: ["2.3.6"],
+            global: "2.3.6",
+          },
+        ]
       },
-      user: "vagrant",
-      group: "vagrant"
+      vim_users: ["quocdt", "company"]
 
       #mysql: {
       #  version: '5.6'
