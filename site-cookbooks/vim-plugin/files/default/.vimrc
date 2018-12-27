@@ -665,6 +665,7 @@ let g:NERDTreeDirArrowCollapsible = '▾'
 let g:NERDTreeGlyphReadOnly = "RO"
 let g:NERDTreeMouseMode=0
 let NERDTreeMapOpenInTab='<ENTER>'
+let g:NERDTreeNodeDelimiter = " "
  autocmd FileType nerdtree setlocal nolist       " 不可視文字を非表示
  autocmd vimenter * NERDTree
  nnoremap Nt :NERDTreeToggle<CR>               " <F2>でトグルする
