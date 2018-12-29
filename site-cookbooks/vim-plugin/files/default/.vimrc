@@ -585,12 +585,6 @@ nmap <F9>   :TrinityToggleSourceExplorer<CR>
 nmap <F10>  :TrinityToggleTagList<CR>
 
 "------------------------------------------------------------------------------
-" Gist.vim
-let g:gist_clip_command = 'pbcopy'
-let g:gist_detect_filetype = 1
-let g:gist_open_browser_after_post = 1
-let g:gist_post_private = 1
-"------------------------------------------------------------------------------
 " poslist
 nmap <C-f> <Plug>(poslist-next-pos)
 imap <C-f> <C-o><Plug>(poslist-next-pos)
